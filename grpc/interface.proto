@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package auction;
+
+option go_package = "https://github.com/thekure/DisysAucSys;auction";
+
+
+service Auction {
+    rpc Bid (RequestBid) returns (Ack) {}
+    rpc Result (HighestBidRequest) returns (Outcome) {}
+}
+
+message RequestBid {
+    int32 id = 1;
+    string message = 2;
+    int32 amount = 3; 
+}
+
+message Ack {
+    string message = 1;
+    int32 amount = 2;
+}
+
+message Outcome {
+    string status = 1;
+    int32 amount = 2;
+}
+
+message HighestBidRequest {
+    string message = 1;
+}
