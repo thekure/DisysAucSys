@@ -1,4 +1,4 @@
-module github.com/thekure/DisysAucSys.git
+module github.com/thekure/DisysAucSys
 
 go 1.19
 
