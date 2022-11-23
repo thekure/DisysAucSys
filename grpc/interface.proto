@@ -11,7 +11,7 @@ service Auction {
 }
 
 message RequestBid {
-    int32 id = 1;
+    string name = 1;
     string message = 2;
     int32 amount = 3; 
 }
