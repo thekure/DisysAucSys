@@ -27,7 +27,7 @@ func main() {
 	arg1, _ := strconv.ParseInt(os.Args[1], 10, 32)
 	ownPort := int32(arg1) + 5001
 
-	//setLog()
+	setLog()
 	flag.Parse()
 
 	// Create listener tcp on port ownPort
@@ -68,8 +68,10 @@ func (s *Server) StartAuctionTimer() {
 
 	DurationOfTime := time.Duration(10) * time.Second
 	startAuction := func() {
+		s.resetAuction()
 		s.isAuctionRunning = true
-		fmt.Println("\nThe Auction has now begun and will run for -15- seconds")
+		fmt.Printf("\nThe Auction has now begun and will run for -15- seconds")
+		log.Printf("\nThe Auction has now begun and will run for -15- seconds")
 	}
 
 	fmt.Println("waiting for auction to begin...")
@@ -84,8 +86,9 @@ func (s *Server) StopAuctionAndAnnounceWinner() {
 	DurationOfTime := time.Duration(10) * time.Second
 
 	stopAuction := func() {
+		s.isAuctionRunning = false
 		fmt.Printf("\nThe auction is now over with the winner being %v. \n Next Auction will begin in -10- seconds", s.currentHighestBidholder)
-		s.resetAuction()
+		log.Printf("\nThe auction is now over with the winner being %v. \n Next Auction will begin in -10- seconds", s.currentHighestBidholder)
 	}
 
 	Timer1 := time.AfterFunc(DurationOfTime, stopAuction)
@@ -97,17 +100,18 @@ func (s *Server) StopAuctionAndAnnounceWinner() {
 func (s *Server) resetAuction() {
 	s.currentHighestBidholder = "the initial value"
 	s.currentHighestBid = 0
-	s.isAuctionRunning = false
 }
 
 func (s *Server) Bid(ctx context.Context, RequestBid *auction.RequestBid) (*auction.Ack, error) {
+
+	log.Printf(RequestBid.Message)
 
 	incomingBid := strconv.Itoa(int(RequestBid.Amount))
 	previousBid := strconv.Itoa(int(s.currentHighestBid))
 
 	if !s.isAuctionRunning {
 		return &auction.Ack{
-			Message: "The auction is currently over and setting up for the next auction. The last auction was won with a bid of: " + previousBid,
+			Message: "The auction is currently over and setting up for the next auction. The last auction was won with by " + s.currentHighestBidholder + "a bid of: " + previousBid,
 			Amount:  s.currentHighestBid,
 		}, nil
 	}

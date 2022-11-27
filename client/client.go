@@ -36,6 +36,7 @@ func main() {
 	}
 
 	// flag.Parse()
+	setLog()
 
 	client := &Client{
 		name:              tempName,
@@ -54,7 +55,7 @@ func main() {
 func (client *Client) makeBid(amount int32) {
 	bid := &auction.RequestBid{
 		Name:    client.name,
-		Message: client.name + " has made the following bid: " + string(amount),
+		Message: client.name + " has made the following bid: " + strconv.Itoa(int(amount)),
 		Amount:  amount,
 	}
 
@@ -64,9 +65,12 @@ func (client *Client) makeBid(amount int32) {
 		ack, err := server.Bid(context.Background(), bid)
 		if err != nil {
 			delete(client.servers, port)
+			log.Printf(client.name + "lost connection to a server, operating number of servers are now " + strconv.Itoa(int(len(resultList))))
 			// fmt.Printf("something went wrong in bid method: %v", err)
+		} else {
+			resultList = append(resultList, ack.GetMessage())
 		}
-		resultList = append(resultList, ack.GetMessage())
+
 	}
 	fmt.Printf(resultList[0] + "\n")
 }
@@ -88,12 +92,15 @@ func (client *Client) requestHighestBid() {
 
 			delete(client.servers, port)
 			// fmt.Printf("something went wrong in requestHB method: %v", err)
+		} else {
+			resultList = append(resultList, outcome.GetStatus())
 		}
-		resultList = append(resultList, outcome.GetStatus())
+
 	}
 	fmt.Printf(resultList[0] + "\n")
 }
 
+// handles clientinput
 func (client *Client) sendMessage() {
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -122,6 +129,7 @@ func handleClient(client *Client) {
 
 }
 
+// hardcoded method that connects to three different servers to ensure active replications
 func (client *Client) getServerConnection() {
 
 	for i := 0; i < 3; i++ {
@@ -136,11 +144,23 @@ func (client *Client) getServerConnection() {
 			log.Fatalf("Could not connect: %s", err)
 		}
 
-		log.Printf("--- Succesfully dialed to %v\n", port)
+		fmt.Printf("--- "+client.name+" succesfully dialed to %v\n", port)
+		log.Printf("--- "+client.name+" succesfully dialed to %v\n", port)
 
 		// defer conn.Close()
 		c := auction.NewAuctionClient(conn)
 		client.servers[port] = c
 	}
 
+}
+
+// Sets log output to file in project dir
+func setLog() *os.File {
+	// This connects to the log file/changes the output of the log informaiton to the log.txt file.
+	f, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	log.SetOutput(f)
+	return f
 }
