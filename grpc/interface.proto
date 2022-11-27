@@ -1,27 +1,31 @@
-syntax="proto3";
-import "google/protobuf/empty.proto";
-
+syntax = "proto3";
 
 package auction;
 
 option go_package = "https://github.com/thekure/DisysAucSys;auction";
 
-message BidRequest{
+
+service Auction {
+    rpc Bid (RequestBid) returns (Ack) {}
+    rpc Result (HighestBidRequest) returns (Outcome) {}
+}
+
+message RequestBid {
     string name = 1;
+    string message = 2;
+    int32 amount = 3; 
+}
+
+message Ack {
+    string message = 1;
     int32 amount = 2;
 }
 
-message Outcome{
-    string name = 1;
-    int32 amount = 2;
-}
-
-message Ack{
+message Outcome {
     string status = 1;
+    int32 amount = 2;
 }
 
-service name{
-    rpc Bid(BidRequest) returns (Ack);
-    rpc Result(google.protobuf.Empty) returns (Outcome);
+message HighestBidRequest {
+    string message = 1;
 }
-

@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,122 +18,122 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// NameClient is the client API for Name service.
+// AuctionClient is the client API for Auction service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type NameClient interface {
-	Bid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*Ack, error)
-	Result(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Outcome, error)
+type AuctionClient interface {
+	Bid(ctx context.Context, in *RequestBid, opts ...grpc.CallOption) (*Ack, error)
+	Result(ctx context.Context, in *HighestBidRequest, opts ...grpc.CallOption) (*Outcome, error)
 }
 
-type nameClient struct {
+type auctionClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewNameClient(cc grpc.ClientConnInterface) NameClient {
-	return &nameClient{cc}
+func NewAuctionClient(cc grpc.ClientConnInterface) AuctionClient {
+	return &auctionClient{cc}
 }
 
-func (c *nameClient) Bid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*Ack, error) {
+func (c *auctionClient) Bid(ctx context.Context, in *RequestBid, opts ...grpc.CallOption) (*Ack, error) {
 	out := new(Ack)
-	err := c.cc.Invoke(ctx, "/auction.name/Bid", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/auction.Auction/Bid", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nameClient) Result(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Outcome, error) {
+func (c *auctionClient) Result(ctx context.Context, in *HighestBidRequest, opts ...grpc.CallOption) (*Outcome, error) {
 	out := new(Outcome)
-	err := c.cc.Invoke(ctx, "/auction.name/Result", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/auction.Auction/Result", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// NameServer is the server API for Name service.
-// All implementations must embed UnimplementedNameServer
+// AuctionServer is the server API for Auction service.
+// All implementations must embed UnimplementedAuctionServer
 // for forward compatibility
-type NameServer interface {
-	Bid(context.Context, *BidRequest) (*Ack, error)
-	Result(context.Context, *emptypb.Empty) (*Outcome, error)
-	mustEmbedUnimplementedNameServer()
+type AuctionServer interface {
+	Bid(context.Context, *RequestBid) (*Ack, error)
+	Result(context.Context, *HighestBidRequest) (*Outcome, error)
+	mustEmbedUnimplementedAuctionServer()
 }
 
-// UnimplementedNameServer must be embedded to have forward compatible implementations.
-type UnimplementedNameServer struct {
+// UnimplementedAuctionServer must be embedded to have forward compatible implementations.
+type UnimplementedAuctionServer struct {
 }
 
-func (UnimplementedNameServer) Bid(context.Context, *BidRequest) (*Ack, error) {
+func (UnimplementedAuctionServer) Bid(context.Context, *RequestBid) (*Ack, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Bid not implemented")
 }
-func (UnimplementedNameServer) Result(context.Context, *emptypb.Empty) (*Outcome, error) {
+func (UnimplementedAuctionServer) Result(context.Context, *HighestBidRequest) (*Outcome, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Result not implemented")
 }
-func (UnimplementedNameServer) mustEmbedUnimplementedNameServer() {}
+func (UnimplementedAuctionServer) mustEmbedUnimplementedAuctionServer() {}
 
-// UnsafeNameServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to NameServer will
+// UnsafeAuctionServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AuctionServer will
 // result in compilation errors.
-type UnsafeNameServer interface {
-	mustEmbedUnimplementedNameServer()
+type UnsafeAuctionServer interface {
+	mustEmbedUnimplementedAuctionServer()
 }
 
-func RegisterNameServer(s grpc.ServiceRegistrar, srv NameServer) {
-	s.RegisterService(&Name_ServiceDesc, srv)
+func RegisterAuctionServer(s grpc.ServiceRegistrar, srv AuctionServer) {
+	s.RegisterService(&Auction_ServiceDesc, srv)
 }
 
-func _Name_Bid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BidRequest)
+func _Auction_Bid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestBid)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NameServer).Bid(ctx, in)
+		return srv.(AuctionServer).Bid(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auction.name/Bid",
+		FullMethod: "/auction.Auction/Bid",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NameServer).Bid(ctx, req.(*BidRequest))
+		return srv.(AuctionServer).Bid(ctx, req.(*RequestBid))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Name_Result_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+func _Auction_Result_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HighestBidRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NameServer).Result(ctx, in)
+		return srv.(AuctionServer).Result(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auction.name/Result",
+		FullMethod: "/auction.Auction/Result",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NameServer).Result(ctx, req.(*emptypb.Empty))
+		return srv.(AuctionServer).Result(ctx, req.(*HighestBidRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Name_ServiceDesc is the grpc.ServiceDesc for Name service.
+// Auction_ServiceDesc is the grpc.ServiceDesc for Auction service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Name_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "auction.name",
-	HandlerType: (*NameServer)(nil),
+var Auction_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "auction.Auction",
+	HandlerType: (*AuctionServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Bid",
-			Handler:    _Name_Bid_Handler,
+			Handler:    _Auction_Bid_Handler,
 		},
 		{
 			MethodName: "Result",
-			Handler:    _Name_Result_Handler,
+			Handler:    _Auction_Result_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

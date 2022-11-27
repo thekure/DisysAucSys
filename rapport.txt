@@ -1,0 +1,85 @@
+OBS: 
+    The goal of this mandatory activity is that you learn (by doing) how to use replication to 
+    design a service that is resilent to crashes. In particular, it is important that you can 
+    recognise what the key issues that may arise are and understand how to deal with them.
+
+
+----------------------------------------------------------------------------------------------------
+Introduction
+
+In this project we have implemented a simple client/server-based auction system using gRPC, 
+in golang. We have worked with the assumption that the network has reliable, ordered message 
+transport where transmissions to non-failed nodes complete within a known time-limit. 
+
+In making the system resilient to the failure-stop failure of one node, we chose the active 
+replication approach, in which the client, through a front-end, is connected to multiple identical 
+servers, such that if one server fails, the client is not affected.
+
+The auction system itself, is a simple gRPC service that allows clients to place bids while an 
+auction is ongoing (this is a fixed timeframe set serverside). They are also able to request the 
+current auction status from the server. If a client outbids a previous bidder, the bid it made 
+will overwrite the previous one, and the client will become the new bid-leader. A client wins 
+the auction if it is bid-leader when the auction stops.
+
+----------------------------------------------------------------------------------------------------
+Architecture ( A description of the architecture of the system and the protocol (behaviour), 
+including any protocols used internally between nodes of the system.)
+
+Proto:
+Our auction service interface contains 2 rpcs; one for bidding and one for status requests. 
+Accompanying these are 4 different messages. 
+-   RequestBid is used in new bids, and carries bid amount and the name of the bidder.
+-   Ack is used to acknowledge a bid to the client.
+-   Outcome is only used when an auction is at an end.
+-   HighestBidRequest is used if a client wants a status on the auction.
+
+Server:
+A server has a struct to maintain some necessary fields, such as currentHighestBid and 
+remainingTime. The currentHighestBid is initialized to 0, making sure the first bidder becomes
+the currentHighestBidholder, as long as the bid is realistic (above 0). The server then starts 
+a countdown of 15 seconds, to emulate the duration of the auction.
+
+----- explain how this is synchronized on multiple servers -----
+
+When the timer runs out, the auction is stopped and the winner announced to all connected clients.
+            |
+            |
+--------- forhold sig lige til det her efter implementering er done --------
+ 
+When a server receives a bid from a client, the bid is compared to the currentHighestBid known to
+the server, using the internal CheckIfBidIsHighest() method that compares 2 integers, overwriting 
+if the bid exceeds the previous one. An acknowledgement is then made with a fitting message, and 
+returned to the bidding client.
+
+When a server receives a result request from a client, it responds with the currentHighestBid no 
+matter what, but depending on whether or not the auction is still running (maintained with a server-
+side boolean), the accompanying message is different.
+
+Client:
+A client has a struct to maintain its name (which is supplied through an in-terminal scan on start-
+up) and a map of servers. Actually it is a map of AuctionClient objects, but these are basically just
+the connections from server to client, and as such we felt it made sense to call the map "servers".
+
+
+
+
+type Client struct {
+	name              string
+	servers           map[int32]auction.AuctionClient
+}
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------
+Correctness 1. Argue whether your implementation satisfies linearisability or sequential 
+consistency (after precisely defining  the property it satisfies).
+
+
+
+
+----------------------------------------------------------------------------------------------------
+Correctness 2. An argument that your protocol is correct in the absence and the presence 
+of failures.
