@@ -39,7 +39,7 @@ func main() {
 	server := &Server{
 		currentHighestBid:       0,
 		port:                    int(ownPort),
-		currentHighestBidholder: "initial value",
+		currentHighestBidholder: "the initial value",
 		isAuctionRunning:        false,
 	}
 
@@ -69,7 +69,7 @@ func (s *Server) StartAuctionTimer() {
 	DurationOfTime := time.Duration(10) * time.Second
 	startAuction := func() {
 		s.isAuctionRunning = true
-		fmt.Println("The Auction has now begun and will run for -15- seconds")
+		fmt.Println("\nThe Auction has now begun and will run for -15- seconds")
 	}
 
 	fmt.Println("waiting for auction to begin...")
@@ -84,15 +84,20 @@ func (s *Server) StopAuctionAndAnnounceWinner() {
 	DurationOfTime := time.Duration(10) * time.Second
 
 	stopAuction := func() {
-		s.isAuctionRunning = false
-		fmt.Println("The auction is now over. Next Auction will begin in -10- seconds")
+		fmt.Printf("\nThe auction is now over with the winner being %v. \n Next Auction will begin in -10- seconds", s.currentHighestBidholder)
+		s.resetAuction()
 	}
 
 	Timer1 := time.AfterFunc(DurationOfTime, stopAuction)
+	time.Sleep(time.Second * 10)
 	defer Timer1.Stop()
 
-	time.Sleep(time.Second * 10)
+}
 
+func (s *Server) resetAuction() {
+	s.currentHighestBidholder = "the initial value"
+	s.currentHighestBid = 0
+	s.isAuctionRunning = false
 }
 
 func (s *Server) Bid(ctx context.Context, RequestBid *auction.RequestBid) (*auction.Ack, error) {
@@ -147,9 +152,9 @@ func (s *Server) Result(ctx context.Context, RequestBid *auction.HighestBidReque
 func (s *Server) CheckIfBidIsHighest(bid int32) bool {
 	return (bid > s.currentHighestBid)
 	// if bid > s.currentHighestBid {
-	// 	return true
+	//  return true
 	// } else {
-	// 	return false
+	//  return false
 	// }
 }
 
