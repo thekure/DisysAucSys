@@ -2,6 +2,36 @@
 Mandatory Hand-In 5
 == A Distributed Auction System ==
 
+
+------- INSTRUCTIONS ------------
+
+To run the program, open 3 separate terminals at the project directory.
+
+If you have MAKE installed (otherwise, see below)
+
+Run the following commands, one in each terminal:
+
+    make server0
+
+    make server1
+
+    make server2
+
+If you don't have MAKE:
+
+Run the following commands, one in each terminal:
+
+    go run server/server.go 0
+
+    go run server/server.go 1
+
+    go run server/server.go 2
+
+It is not possible to connect to the three servers by running the following in a seperate terminal:
+
+    go run client/client.go     
+
+
 ::Introduction::
 
 You must implement a **distributed auction system** using replication: a distributed component which handles auctions, and provides operations for bidding and querying the state of an auction. The component must faithfully implement the semantics of the system described below, and must at least be resilient to one (1) crash failure.
