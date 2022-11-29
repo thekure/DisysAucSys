@@ -91,6 +91,7 @@ func (client *Client) requestHighestBid() {
 		if err != nil {
 
 			delete(client.servers, port)
+			log.Printf(client.name + "lost connection to a server, operating number of servers are now " + strconv.Itoa(int(len(resultList))))
 			// fmt.Printf("something went wrong in requestHB method: %v", err)
 		} else {
 			resultList = append(resultList, outcome.GetStatus())

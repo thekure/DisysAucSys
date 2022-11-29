@@ -21,7 +21,7 @@ The Auction has now begun and will run for -15- seconds
 2022/11/29 21:14:57 Bemi has made the following bid: 12
 2022/11/29 21:15:01 Bemi requested the current bid value.
 2022/11/29 21:15:01 Bemi requested the current bid value.
-2022/11/29 21:15:01 Bemilost connection to a server, operating number of servers are now 2
+2022/11/29 21:15:01 Bemi lost connection to a server, operating number of servers are now 2
 2022/11/29 21:15:07 
 The auction is now over with the winner being Bemi. 
  Next Auction will begin in -10- seconds
@@ -43,7 +43,7 @@ The Auction has now begun and will run for -15- seconds
 2022/11/29 21:15:25 Bemi has made the following bid: 1001
 2022/11/29 21:15:25 Bemi has made the following bid: 1001
 2022/11/29 21:15:29 Bemi requested the current bid value.
-2022/11/29 21:15:29 Bemilost connection to a server, operating number of servers are now 1
+2022/11/29 21:15:29 Bemi lost connection to a server, operating number of servers are now 1
 2022/11/29 21:15:33 
 The auction is now over with the winner being Bemi. 
  Next Auction will begin in -10- seconds
