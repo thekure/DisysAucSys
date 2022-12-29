@@ -59,6 +59,7 @@ func (client *Client) makeBid(amount int32) {
 		Amount:  amount,
 	}
 
+	// List of responses from replicas when asking for auction result:
 	resultList := make([]string, 0, 3)
 
 	for port, server := range client.servers {

@@ -17,11 +17,21 @@ import (
 type Server struct {
 	auction.UnimplementedAuctionServer
 	currentHighestBid       int32
-	port                    int
+	port                    int // ownPort
 	currentHighestBidholder string
-	remainingTime           int32
+	remainingTime           int32 // ...of the ongoing auction.
 	isAuctionRunning        bool
 }
+
+/*
+	- Assigns ownPort to user-input int + 5001. Default inputs are 0, 1 and 2.
+	- Sets log.out.
+	- Creates listener on ownPort.
+	- Starts serving, and registers server.
+	- Starts auction-timer (a bit stupidly, they should have begun at exactly the same time)
+	- Announces winner to servers.
+
+*/
 
 func main() {
 	arg1, _ := strconv.ParseInt(os.Args[1], 10, 32)
@@ -56,6 +66,7 @@ func main() {
 
 	}
 }
+
 func (s *Server) handleTime() {
 
 	for {
@@ -77,6 +88,7 @@ func (s *Server) StartAuctionTimer() {
 	fmt.Println("waiting for auction to begin...")
 	Timer1 := time.AfterFunc(DurationOfTime, startAuction)
 	time.Sleep(time.Second * 15)
+	// defer means that the code won't be run to the very end of the method.
 	defer Timer1.Stop()
 
 }
@@ -93,8 +105,8 @@ func (s *Server) StopAuctionAndAnnounceWinner() {
 
 	Timer1 := time.AfterFunc(DurationOfTime, stopAuction)
 	time.Sleep(time.Second * 10)
+	// defer means that the code won't be run to the very end of the method.
 	defer Timer1.Stop()
-
 }
 
 func (s *Server) resetAuction() {
